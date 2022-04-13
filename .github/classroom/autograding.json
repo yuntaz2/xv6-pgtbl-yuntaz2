@@ -1,0 +1,54 @@
+{
+  "tests": [
+    {
+      "name": "Setup Environment",
+      "setup": "",
+      "run": "sudo apt-get update; sudo apt-get install git build-essential gdb-multiarch qemu-system-misc gcc-riscv64-linux-gnu binutils-riscv64-linux-gnu",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 30,
+      "points": null
+    },
+    {
+      "name": "Make",
+      "setup": "",
+      "run": "make",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": null
+    },
+    {
+      "name": "pgtbl-test-ugetpid",
+      "setup": "",
+      "run": "./grade-lab-pgtbl \"pgtbltest: ugetpid\"",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 25
+    },
+    {
+      "name": "pte-printout",
+      "setup": "",
+      "run": "./grade-lab-pgtbl \"pte printout\"",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 25
+    },
+    {
+      "name": "pgtbl-test-pgaccess",
+      "setup": "",
+      "run": "./grade-lab-pgtbl \"pgtbltest: pgaccess\"",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 50
+    }
+  ]
+}
