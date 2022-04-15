@@ -7,6 +7,8 @@
 #include "spinlock.h"
 #include "proc.h"
 
+#define UPPER 512 // maximum value to check by pgaccess
+
 uint64
 sys_exit(void)
 {
@@ -76,10 +78,54 @@ sys_sleep(void)
   return 0;
 }
 
+unsigned int pgaccess_helper(pagetable_t pagetable, uint64 page_addr)
+{
+  pte_t *pte;
+
+  pte = walk(pagetable, page_addr, 0);
+
+  if ((*pte & PTE_A))
+  {
+    *pte &= (~PTE_A); // clear PTE_A after checking if it exist
+    return 1;
+  }
+  else
+    return 0;
+}
+
 #ifdef LAB_PGTBL
 int sys_pgaccess(void)
 {
   // lab pgtbl: your code here.
+  // printf("sys_pgaccess is called.\n");
+  // First, it takes a user page to check.
+  // Second, it takes the number of pages to check.
+  // Third, it takes a user address to a buffer to store the results into a bitmask.
+  uint64 start_addr;
+  int pages;
+  uint64 user_addr;
+  if (argaddr(0, &start_addr) < 0)
+    return -1;
+  if (argint(1, &pages) < 0)
+    return -1;
+  if (0 > pages || UPPER < pages)
+    return -1;
+  if (argaddr(2, &user_addr) < 0)
+    return -1;
+
+  struct proc *p = myproc();
+  int bitmask = 0;
+
+  for (int i = 0; i < pages; ++i)
+  {
+    int page_addr = start_addr + PGSIZE * i;
+    unsigned int abit = pgaccess_helper(p->pagetable, page_addr); // in vm.c
+    bitmask |= abit << i;
+  }
+  // copy it to the user via copyout
+  if (copyout(myproc()->pagetable, user_addr, (char *)&bitmask, sizeof(bitmask)) < 0)
+    return -1;
+
   return 0;
 }
 #endif

@@ -7,8 +7,7 @@
 void ugetpid_test();
 void pgaccess_test();
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   ugetpid_test();
   pgaccess_test();
@@ -18,24 +17,24 @@ main(int argc, char *argv[])
 
 char *testname = "???";
 
-void
-err(char *why)
+void err(char *why)
 {
   printf("pgtbltest: %s failed: %s, pid=%d\n", testname, why, getpid());
   exit(1);
 }
 
-void
-ugetpid_test()
+void ugetpid_test()
 {
   int i;
 
   printf("ugetpid_test starting\n");
   testname = "ugetpid_test";
 
-  for (i = 0; i < 64; i++) {
+  for (i = 0; i < 64; i++)
+  {
     int ret = fork();
-    if (ret != 0) {
+    if (ret != 0)
+    {
       wait(&ret);
       if (ret != 0)
         exit(1);
@@ -48,8 +47,7 @@ ugetpid_test()
   printf("ugetpid_test: OK\n");
 }
 
-void
-pgaccess_test()
+void pgaccess_test()
 {
   char *buf;
   unsigned int abits;
@@ -61,6 +59,7 @@ pgaccess_test()
   buf[PGSIZE * 1] += 1;
   buf[PGSIZE * 2] += 1;
   buf[PGSIZE * 30] += 1;
+  printf("abits: %x\n", abits);
   if (pgaccess(buf, 32, &abits) < 0)
     err("pgaccess failed");
   if (abits != ((1 << 1) | (1 << 2) | (1 << 30)))
